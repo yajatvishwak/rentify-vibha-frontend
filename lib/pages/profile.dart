@@ -60,30 +60,31 @@ class _ProfileState extends State<Profile> {
                         splashColor: Colors.blue.withAlpha(30),
                         onTap: () {
                           // ignore: unused_element
-                          showAlertDialog(BuildContext context) {
-                            // set up the button
-                            Widget okButton = TextButton(
-                              child: Text("OK"),
-                              onPressed: () {},
-                            );
-
-                            // set up the AlertDialog
-                            AlertDialog alert = AlertDialog(
-                              title: Text("My title"),
-                              content: Text("This is my message."),
-                              actions: [
-                                okButton,
-                              ],
-                            );
-
-                            // show the dialog
-                            showDialog(
+                          showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return alert;
-                              },
-                            );
-                          }
+                                return AlertDialog(
+                                  title:
+                                      Text("Do you want to return this item?"),
+                                  content: Text(
+                                      "This listing will be deleted from your profile page if you continue"),
+                                  actions: [
+                                    TextButton(
+                                      child: Text("Cancel"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text("Continue"),
+                                      onPressed: () {
+                                        // return item web call
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
                         },
                         child: Padding(
                           padding: EdgeInsets.all(18.0),
@@ -132,11 +133,30 @@ class _ProfileState extends State<Profile> {
                       child: InkWell(
                         splashColor: Colors.blue.withAlpha(30),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Proddetails()),
-                          );
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title:
+                                      Text("Do you want to delete this item?"),
+                                  content: Text("This listing will be deleted"),
+                                  actions: [
+                                    TextButton(
+                                      child: Text("Cancel"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text("Continue"),
+                                      onPressed: () {
+                                        // return item web call
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
                         },
                         child: Padding(
                           padding: EdgeInsets.all(18.0),
