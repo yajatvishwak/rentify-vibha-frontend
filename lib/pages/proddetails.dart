@@ -44,6 +44,22 @@ class _ProddetailsState extends State<Proddetails> {
                 ),
               ],
             ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."),
+            SizedBox(
+              height: 30,
+            ),
+            SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Text("Rent this"),
+                    )))
           ],
         ),
       )),
