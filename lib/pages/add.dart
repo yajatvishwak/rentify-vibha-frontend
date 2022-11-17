@@ -97,7 +97,7 @@ class _AddState extends State<Add> {
                         selectedInterval = value!;
                       });
                     },
-                    items: ["hours", "months", "session", "week"]
+                    items: ["hour", "month", "session", "week"]
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,

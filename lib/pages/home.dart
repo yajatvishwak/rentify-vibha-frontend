@@ -11,6 +11,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List<dynamic> list = [
+    {
+      "title": "Car and all 1",
+      "price": "123",
+      "category": "Books",
+      "interval": "hours",
+      "imgurl":
+          "https://stimg.cardekho.com/images/carexteriorimages/930x620/Hyundai/Venue/9154/1655441194954/front-left-side-47.jpg?tr=w-375",
+    }
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,11 +42,10 @@ class _HomeState extends State<Home> {
             SizedBox(
               height: 15,
             ),
-            ListView(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              children: [
-                Center(
+            ListView.builder(
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                return Center(
                   child: Card(
                     child: InkWell(
                       splashColor: Colors.blue.withAlpha(30),
@@ -53,12 +62,11 @@ class _HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           // ignore: prefer_const_literals_to_create_immutables
                           children: [
-                            Image.network(
-                                "https://stimg.cardekho.com/images/carexteriorimages/930x620/Hyundai/Venue/9154/1655441194954/front-left-side-47.jpg?tr=w-375"),
+                            Image.network(list[index]["imgurl"]),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 20, 0, 2),
                               child: Text(
-                                'Car and all',
+                                list[index]["title"],
                                 style: TextStyle(fontSize: 17),
                               ),
                             ),
@@ -67,10 +75,12 @@ class _HomeState extends State<Home> {
                               // ignore: prefer_const_literals_to_create_immutables
                               children: [
                                 Chip(
-                                  label: const Text('Aaron Burr'),
+                                  label: Text(list[index]["category"]),
                                 ),
                                 Text(
-                                  '50 rs per hour',
+                                  list[index]["price"] +
+                                      ' rs per ' +
+                                      list[index]["interval"],
                                   style: TextStyle(fontSize: 17),
                                 ),
                               ],
@@ -80,8 +90,10 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
-                )
-              ],
+                );
+              },
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
             )
           ],
         ),
