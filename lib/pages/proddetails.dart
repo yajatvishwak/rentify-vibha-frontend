@@ -1,6 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Proddetails extends StatefulWidget {
   const Proddetails();
@@ -10,6 +15,38 @@ class Proddetails extends StatefulWidget {
 }
 
 class _ProddetailsState extends State<Proddetails> {
+  String title = "title of the prod";
+  String desc =
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+  String price = "42";
+  String category = "Books";
+  int lid = 1;
+  String interval = "hour";
+  String imgurl =
+      "https://img.freepik.com/free-photo/red-luxury-sedan-road_114579-5079.jpg?w=2000";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    Map payload = {
+      "lid": "1",
+    };
+    var url = Uri.parse(dotenv.env["BASEURL"]! + 'get-listing');
+    var response = await http.post(url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(payload));
+    Map res = json.decode(response.body);
+    print(res);
+    if (response.statusCode == 200 && res["code"] == "suc") {
+      title = res["item"]["title"];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,13 +61,11 @@ class _ProddetailsState extends State<Proddetails> {
                   Navigator.pop(context);
                 },
                 icon: Icon(Icons.chevron_left)),
-            Image.network(
-                "https://stimg.cardekho.com/images/carexteriorimages/930x620/Hyundai/Venue/9154/1655441194954/front-left-side-47.jpg?tr=w-375"),
-            // ignore: prefer_const_constructors
+            Image.network(imgurl), // ignore: prefer_const_constructors
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 17, 0, 0),
-              child: const Text(
-                "Title of the product",
+              child: Text(
+                title,
                 style: TextStyle(fontSize: 23),
               ),
             ),
@@ -38,17 +73,16 @@ class _ProddetailsState extends State<Proddetails> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               // ignore: prefer_const_literals_to_create_immutables
               children: [
-                const Text("50 rs per hour"),
+                Text(price + " rs per " + interval),
                 Chip(
-                  label: const Text('Aaron Burr'),
+                  label: Text(category),
                 ),
               ],
             ),
             SizedBox(
               height: 10,
             ),
-            Text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."),
+            Text(desc),
             SizedBox(
               height: 30,
             ),

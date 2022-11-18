@@ -21,7 +21,7 @@ class _AddState extends State<Add> {
     super.initState();
   }
 
-  String selectedInterval = "hours";
+  String selectedInterval = "hour";
   String selectedCategory = "Books";
   TextEditingController titleEditing = TextEditingController();
   TextEditingController descEditing = TextEditingController();
