@@ -41,9 +41,14 @@ class _ProddetailsState extends State<Proddetails> {
         headers: {"Content-Type": "application/json"},
         body: json.encode(payload));
     Map res = json.decode(response.body);
-    print(res);
     if (response.statusCode == 200 && res["code"] == "suc") {
-      title = res["item"]["title"];
+      setState(() {
+        title = res["item"]["title"];
+        desc = res["item"]["desc"];
+        category = res["item"]["category"];
+        price = res["item"]["price"];
+        interval = res["item"]["interval"];
+      });
     }
   }
 
