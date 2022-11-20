@@ -1,7 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/pages/proddetails.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   const Profile();
@@ -11,6 +17,43 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  List<dynamic> list = [
+    {
+      "title": "Car and all 1",
+      "price": "123",
+      "category": "Books",
+      "interval": "hours",
+      "imgurl":
+          "https://stimg.cardekho.com/images/carexteriorimages/930x620/Hyundai/Venue/9154/1655441194954/front-left-side-47.jpg?tr=w-375",
+    }
+  ];
+  void fetchData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    Map payload = {
+      "uid": prefs.getString("uid"),
+    };
+    var url = Uri.parse(dotenv.env["BASEURL"]! + 'get-profile');
+    var response = await http.post(url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(payload));
+    Map res = json.decode(response.body);
+    // print(res);
+    if (response.statusCode == 200 && res["code"] == "suc") {
+      setState(() {
+        list = res["userrenting"];
+        print(list);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,9 +96,11 @@ class _ProfileState extends State<Profile> {
                   height: 40,
                 ),
                 Text("Items you have rented", style: TextStyle(fontSize: 20)),
-                Column(
-                  children: [
-                    Card(
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    return Card(
                       child: InkWell(
                         splashColor: Colors.blue.withAlpha(30),
                         onTap: () {
@@ -76,10 +121,60 @@ class _ProfileState extends State<Profile> {
                                       },
                                     ),
                                     TextButton(
-                                      child: Text("Continue"),
+                                      child: Text("View Listing"),
                                       onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Proddetails(
+                                                    lid: list[index]["lid"],
+                                                  )),
+                                        );
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text("Continue"),
+                                      onPressed: () async {
                                         // return item web call
-                                        Navigator.of(context).pop();
+                                        final prefs = await SharedPreferences
+                                            .getInstance();
+
+                                        Map payload = {
+                                          "uid": prefs.getString("uid"),
+                                          "lid": list[index]["lid"]
+                                        };
+                                        var url = Uri.parse(
+                                            dotenv.env["BASEURL"]! +
+                                                'return-item');
+                                        var response = await http.post(url,
+                                            headers: {
+                                              "Content-Type": "application/json"
+                                            },
+                                            body: json.encode(payload));
+                                        Map res = json.decode(response.body);
+                                        print(res);
+                                        if (response.statusCode == 200 &&
+                                            res["code"] == "suc") {
+                                          // print("hehe");
+                                          Navigator.of(context).pop();
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                    title: Text("Done bob"),
+                                                    content: Text(
+                                                        "Returned listing"),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context, 'OK'),
+                                                        child: const Text('OK'),
+                                                      ),
+                                                    ],
+                                                  ));
+                                        }
+                                        fetchData();
                                       },
                                     ),
                                   ],
@@ -92,12 +187,11 @@ class _ProfileState extends State<Profile> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             // ignore: prefer_const_literals_to_create_immutables
                             children: [
-                              Image.network(
-                                  "https://stimg.cardekho.com/images/carexteriorimages/930x620/Hyundai/Venue/9154/1655441194954/front-left-side-47.jpg?tr=w-375"),
+                              Image.network(list[index]["imgurl"]),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 2),
                                 child: Text(
-                                  'Car and all',
+                                  list[index]["title"],
                                   style: TextStyle(fontSize: 17),
                                 ),
                               ),
@@ -107,10 +201,12 @@ class _ProfileState extends State<Profile> {
                                 // ignore: prefer_const_literals_to_create_immutables
                                 children: [
                                   Chip(
-                                    label: const Text('Aaron Burr'),
+                                    label: Text(list[index]["category"]),
                                   ),
                                   Text(
-                                    '50 rs per hour',
+                                    list[index]["price"] +
+                                        ' rs per ' +
+                                        list[index]["interval"],
                                     style: TextStyle(fontSize: 17),
                                   ),
                                 ],
@@ -119,8 +215,8 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
                 SizedBox(
                   height: 40,

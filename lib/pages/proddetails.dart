@@ -8,7 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Proddetails extends StatefulWidget {
-  const Proddetails();
+  final int lid;
+  const Proddetails({Key? key, required this.lid}) : super(key: key);
 
   @override
   State<Proddetails> createState() => _ProddetailsState();
@@ -20,7 +21,6 @@ class _ProddetailsState extends State<Proddetails> {
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
   String price = "42";
   String category = "Books";
-  int lid = 1;
   String interval = "hour";
   String imgurl =
       "https://img.freepik.com/free-photo/red-luxury-sedan-road_114579-5079.jpg?w=2000";
@@ -34,7 +34,7 @@ class _ProddetailsState extends State<Proddetails> {
 
   void fetchData() async {
     Map payload = {
-      "lid": "1",
+      "lid": widget.lid,
     };
     var url = Uri.parse(dotenv.env["BASEURL"]! + 'get-listing');
     var response = await http.post(url,
@@ -48,6 +48,7 @@ class _ProddetailsState extends State<Proddetails> {
         category = res["item"]["category"];
         price = res["item"]["price"];
         interval = res["item"]["interval"];
+        imgurl = res["item"]["imgurl"];
       });
     }
   }
@@ -94,7 +95,35 @@ class _ProddetailsState extends State<Proddetails> {
             SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+
+                      Map payload = {
+                        "lid": widget.lid,
+                        "uid": prefs.getString("uid")
+                      };
+                      var url = Uri.parse(
+                          dotenv.env["BASEURL"]! + 'add-item-to-rent');
+                      var response = await http.post(url,
+                          headers: {"Content-Type": "application/json"},
+                          body: json.encode(payload));
+                      Map res = json.decode(response.body);
+                      if (response.statusCode == 200 && res["code"] == "suc") {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                                  title: Text("Successful"),
+                                  content: Text("Renting started "),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, 'OK'),
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ));
+                      }
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text("Rent this"),

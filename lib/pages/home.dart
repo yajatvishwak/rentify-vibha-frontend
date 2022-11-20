@@ -86,7 +86,9 @@ class _HomeState extends State<Home> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Proddetails()),
+                              builder: (context) => Proddetails(
+                                    lid: list[index]["lid"],
+                                  )),
                         );
                       },
                       child: Padding(
