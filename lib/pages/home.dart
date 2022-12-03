@@ -60,77 +60,78 @@ class _HomeState extends State<Home> {
       body: SafeArea(
           child: Padding(
         padding: const EdgeInsets.all(17.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          // ignore: prefer_const_literals_to_create_immutables
-          children: [
-            Text(
-              "Welcome " + username,
-              style: TextStyle(fontSize: 24),
-            ),
-            Text(
-              "What would you like to rent today?",
-              style: TextStyle(fontSize: 14),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            ListView.builder(
-              itemCount: list.length,
-              itemBuilder: (context, index) {
-                return Center(
-                  child: Card(
-                    child: InkWell(
-                      splashColor: Colors.blue.withAlpha(30),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Proddetails(
-                                    lid: list[index]["lid"],
-                                  )),
-                        );
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.all(18.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          // ignore: prefer_const_literals_to_create_immutables
-                          children: [
-                            Image.network(list[index]["imgurl"]),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 20, 0, 2),
-                              child: Text(
-                                list[index]["title"],
-                                style: TextStyle(fontSize: 17),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            // ignore: prefer_const_literals_to_create_immutables
+            children: [
+              Text(
+                "Welcome " + username,
+                style: TextStyle(fontSize: 24),
+              ),
+              Text(
+                "What would you like to rent today?",
+                style: TextStyle(fontSize: 14),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (var l in list)
+                    Center(
+                      child: Card(
+                        child: InkWell(
+                          splashColor: Colors.blue.withAlpha(30),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Proddetails(
+                                        lid: l["lid"],
+                                      )),
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(18.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               // ignore: prefer_const_literals_to_create_immutables
                               children: [
-                                Chip(
-                                  label: Text(list[index]["category"]),
+                                Image.network(l["imgurl"]),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 20, 0, 2),
+                                  child: Text(
+                                    l["title"],
+                                    style: TextStyle(fontSize: 17),
+                                  ),
                                 ),
-                                Text(
-                                  list[index]["price"] +
-                                      ' rs per ' +
-                                      list[index]["interval"],
-                                  style: TextStyle(fontSize: 17),
-                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                  children: [
+                                    Chip(
+                                      label: Text(l["category"]),
+                                    ),
+                                    Text(
+                                      l["price"] + ' rs per ' + l["interval"],
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                  ],
+                                )
                               ],
-                            )
-                          ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              },
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-            )
-          ],
+                    )
+                ],
+              ),
+            ],
+          ),
         ),
       )),
     );

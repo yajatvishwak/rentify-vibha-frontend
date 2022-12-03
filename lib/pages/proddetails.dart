@@ -56,81 +56,84 @@ class _ProddetailsState extends State<Proddetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.all(17.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.chevron_left)),
-            Image.network(imgurl), // ignore: prefer_const_constructors
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 17, 0, 0),
-              child: Text(
-                title,
-                style: TextStyle(fontSize: 23),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              // ignore: prefer_const_literals_to_create_immutables
-              children: [
-                Text(price + " rs per " + interval),
-                Chip(
-                  label: Text(category),
+      body: SingleChildScrollView(
+        child: SafeArea(
+            child: Padding(
+          padding: const EdgeInsets.all(17.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.chevron_left)),
+              Image.network(imgurl), // ignore: prefer_const_constructors
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 17, 0, 0),
+                child: Text(
+                  title,
+                  style: TextStyle(fontSize: 23),
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(desc),
-            SizedBox(
-              height: 30,
-            ),
-            SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                    onPressed: () async {
-                      final prefs = await SharedPreferences.getInstance();
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // ignore: prefer_const_literals_to_create_immutables
+                children: [
+                  Text(price + " rs per " + interval),
+                  Chip(
+                    label: Text(category),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(desc),
+              SizedBox(
+                height: 30,
+              ),
+              SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        final prefs = await SharedPreferences.getInstance();
 
-                      Map payload = {
-                        "lid": widget.lid,
-                        "uid": prefs.getString("uid")
-                      };
-                      var url = Uri.parse(
-                          dotenv.env["BASEURL"]! + 'add-item-to-rent');
-                      var response = await http.post(url,
-                          headers: {"Content-Type": "application/json"},
-                          body: json.encode(payload));
-                      Map res = json.decode(response.body);
-                      if (response.statusCode == 200 && res["code"] == "suc") {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) => AlertDialog(
-                                  title: Text("Successful"),
-                                  content: Text("Renting started "),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, 'OK'),
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                ));
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Text("Rent this"),
-                    )))
-          ],
-        ),
-      )),
+                        Map payload = {
+                          "lid": widget.lid,
+                          "uid": prefs.getString("uid")
+                        };
+                        var url = Uri.parse(
+                            dotenv.env["BASEURL"]! + 'add-item-to-rent');
+                        var response = await http.post(url,
+                            headers: {"Content-Type": "application/json"},
+                            body: json.encode(payload));
+                        Map res = json.decode(response.body);
+                        if (response.statusCode == 200 &&
+                            res["code"] == "suc") {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                    title: Text("Successful"),
+                                    content: Text("Renting started "),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, 'OK'),
+                                        child: const Text('OK'),
+                                      ),
+                                    ],
+                                  ));
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Text("Rent this"),
+                      )))
+            ],
+          ),
+        )),
+      ),
     );
   }
 }
