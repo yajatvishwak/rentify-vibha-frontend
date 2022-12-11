@@ -6,20 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/app.dart';
 import 'package:frontend/pages/home.dart';
-import 'package:frontend/pages/signup.dart';
+import 'package:frontend/pages/login.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Login extends StatefulWidget {
-  const Login();
+class Signup extends StatefulWidget {
+  const Signup();
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Signup> createState() => _SignupState();
 }
 
-class _LoginState extends State<Login> {
+class _SignupState extends State<Signup> {
   TextEditingController usernameEditing = TextEditingController();
   TextEditingController passwordEditing = TextEditingController();
+  TextEditingController nameEditing = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,17 +61,28 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: passwordEditing,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Name',
+                  ),
+                ),
+              ),
               SizedBox(
-                height: 2,
+                height: 20,
               ),
               TextButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const Signup()),
+                      MaterialPageRoute(builder: (context) => const Login()),
                     );
                   },
-                  child: Text("New here? Signup here")),
+                  child: Text("Not New here? Signin here")),
               SizedBox(
                 width: double.infinity,
                 child: Padding(
@@ -79,7 +91,8 @@ class _LoginState extends State<Login> {
                       onPressed: () async {
                         Map payload = {
                           "username": usernameEditing.text,
-                          "password": passwordEditing.text
+                          "password": passwordEditing.text,
+                          "name": nameEditing.text,
                         };
                         var url = Uri.parse(dotenv.env["BASEURL"]! + 'login');
                         var response = await http.post(url,
@@ -90,7 +103,7 @@ class _LoginState extends State<Login> {
                         if (response.statusCode == 200 &&
                             res["code"] == "suc") {
                           final prefs = await SharedPreferences.getInstance();
-                          prefs.setString("name", res["name"].toString());
+                          prefs.setString("name", nameEditing.text);
                           prefs.setString("username", usernameEditing.text);
                           prefs.setString("uid", res["uid"].toString());
                           prefs.setString("password", passwordEditing.text);
@@ -116,7 +129,7 @@ class _LoginState extends State<Login> {
                                   ));
                         }
                       },
-                      child: const Text("Login")),
+                      child: const Text("Signup")),
                 ),
               )
             ]),
