@@ -19,6 +19,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   TextEditingController usernameEditing = TextEditingController();
   TextEditingController passwordEditing = TextEditingController();
+  TextEditingController phonenumberEditing = TextEditingController();
   TextEditingController nameEditing = TextEditingController();
 
   List<dynamic> list = [
@@ -31,12 +32,14 @@ class _ProfileState extends State<Profile> {
           "https://stimg.cardekho.com/images/carexteriorimages/930x620/Hyundai/Venue/9154/1655441194954/front-left-side-47.jpg?tr=w-375",
     }
   ];
+  List<dynamic> others = [];
 
   void fetchData() async {
     final prefs = await SharedPreferences.getInstance();
     nameEditing.text = prefs.getString("name")!;
     usernameEditing.text = prefs.getString("username")!;
     passwordEditing.text = prefs.getString("password")!;
+    phonenumberEditing.text = prefs.getString("phonenumber")!;
     Map payload = {
       "uid": prefs.getString("uid"),
     };
@@ -49,6 +52,7 @@ class _ProfileState extends State<Profile> {
     if (response.statusCode == 200 && res["code"] == "suc") {
       setState(() {
         list = res["userrenting"];
+        others = res["otheruserrentingyourproducts"];
         print(list);
       });
     }
@@ -97,6 +101,18 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 SizedBox(height: 8),
+                Text("phone", style: TextStyle(fontSize: 15)),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: phonenumberEditing,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Phone',
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8),
                 Text("name", style: TextStyle(fontSize: 15)),
                 Padding(
                   padding: EdgeInsets.all(8.0),
@@ -115,6 +131,7 @@ class _ProfileState extends State<Profile> {
                       Map payload = {
                         "username": usernameEditing.text,
                         "password": passwordEditing.text,
+                        "phonenumber": phonenumberEditing.text,
                         "name": nameEditing.text,
                         "uid": prefs.getString("uid")
                       };
@@ -126,6 +143,7 @@ class _ProfileState extends State<Profile> {
                       prefs.setString("name", nameEditing.text);
                       prefs.setString("username", usernameEditing.text);
                       prefs.setString("password", passwordEditing.text);
+                      prefs.setString("phonenumber", phonenumberEditing.text);
                       showDialog(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
@@ -141,6 +159,48 @@ class _ProfileState extends State<Profile> {
                               ));
                     },
                     child: Text("Save")),
+                SizedBox(
+                  height: 40,
+                ),
+                Text("Your items rented by others",
+                    style: TextStyle(fontSize: 20)),
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    // ignore: prefer_const_literals_to_create_immutables
+                    children: others
+                        .map(
+                          (e) => Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                // ignore: prefer_const_literals_to_create_immutables
+                                children: [
+                                  Text(
+                                    e["listingname"],
+                                    style: TextStyle(fontSize: 23),
+                                  ),
+                                  Text("Rented by " + e["rentingusername"]),
+                                  Text(e["rentinguserph"]),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Proddetails(
+                                                    lid: e["listingid"],
+                                                  )),
+                                        );
+                                      },
+                                      child: Text("View Listing"))
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList()),
                 SizedBox(
                   height: 40,
                 ),

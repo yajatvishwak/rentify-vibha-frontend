@@ -24,6 +24,8 @@ class _ProddetailsState extends State<Proddetails> {
   String interval = "hour";
   String imgurl =
       "https://img.freepik.com/free-photo/red-luxury-sedan-road_114579-5079.jpg?w=2000";
+  String by = "";
+  String ph = "";
 
   @override
   void initState() {
@@ -49,6 +51,8 @@ class _ProddetailsState extends State<Proddetails> {
         price = res["item"]["price"];
         interval = res["item"]["interval"];
         imgurl = res["item"]["imgurl"];
+        by = res["item"]["user"]["name"];
+        ph = res["item"]["user"]["phonenumber"];
       });
     }
   }
@@ -75,6 +79,22 @@ class _ProddetailsState extends State<Proddetails> {
                   title,
                   style: TextStyle(fontSize: 23),
                 ),
+              ),
+              Row(
+                children: [
+                  Text(
+                    by,
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  Text(
+                    " - ",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  Text(
+                    by,
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

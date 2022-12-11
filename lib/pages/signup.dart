@@ -19,6 +19,7 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   TextEditingController usernameEditing = TextEditingController();
+  TextEditingController phonenumberEditing = TextEditingController();
   TextEditingController passwordEditing = TextEditingController();
   TextEditingController nameEditing = TextEditingController();
   @override
@@ -65,6 +66,17 @@ class _SignupState extends State<Signup> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
+                    controller: phonenumberEditing,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Phone',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
                     controller: nameEditing,
                     obscureText: true,
                     decoration: InputDecoration(
@@ -94,6 +106,7 @@ class _SignupState extends State<Signup> {
                             "username": usernameEditing.text,
                             "password": passwordEditing.text,
                             "name": nameEditing.text,
+                            "phonenumber": phonenumberEditing.text
                           };
                           var url =
                               Uri.parse(dotenv.env["BASEURL"]! + 'signup');
@@ -109,6 +122,8 @@ class _SignupState extends State<Signup> {
                             prefs.setString("username", usernameEditing.text);
                             prefs.setString("uid", res["uid"].toString());
                             prefs.setString("password", passwordEditing.text);
+                            prefs.setString(
+                                "phonnumber", phonenumberEditing.text);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
