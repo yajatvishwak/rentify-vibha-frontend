@@ -72,6 +72,8 @@ class _ProfileState extends State<Profile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Edit Profile", style: TextStyle(fontSize: 20)),
+                SizedBox(height: 8),
+                Text("username", style: TextStyle(fontSize: 15)),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextField(
@@ -82,6 +84,8 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ),
+                SizedBox(height: 8),
+                Text("password", style: TextStyle(fontSize: 15)),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextField(
@@ -92,6 +96,8 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ),
+                SizedBox(height: 8),
+                Text("name", style: TextStyle(fontSize: 15)),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextField(
