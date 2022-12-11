@@ -17,6 +17,10 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  TextEditingController usernameEditing = TextEditingController();
+  TextEditingController passwordEditing = TextEditingController();
+  TextEditingController nameEditing = TextEditingController();
+
   List<dynamic> list = [
     {
       "title": "Car and all 1",
@@ -27,9 +31,12 @@ class _ProfileState extends State<Profile> {
           "https://stimg.cardekho.com/images/carexteriorimages/930x620/Hyundai/Venue/9154/1655441194954/front-left-side-47.jpg?tr=w-375",
     }
   ];
+
   void fetchData() async {
     final prefs = await SharedPreferences.getInstance();
-
+    nameEditing.text = prefs.getString("name")!;
+    usernameEditing.text = prefs.getString("username")!;
+    passwordEditing.text = prefs.getString("password")!;
     Map payload = {
       "uid": prefs.getString("uid"),
     };
@@ -68,6 +75,7 @@ class _ProfileState extends State<Profile> {
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextField(
+                    controller: usernameEditing,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Username',
@@ -77,6 +85,7 @@ class _ProfileState extends State<Profile> {
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextField(
+                    controller: passwordEditing,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Password',
@@ -86,12 +95,46 @@ class _ProfileState extends State<Profile> {
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextField(
+                    controller: nameEditing,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Name',
                     ),
                   ),
                 ),
+                ElevatedButton(
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+
+                      Map payload = {
+                        "username": usernameEditing.text,
+                        "password": passwordEditing.text,
+                        "name": nameEditing.text,
+                        "uid": prefs.getString("uid")
+                      };
+                      var url =
+                          Uri.parse(dotenv.env["BASEURL"]! + 'editprofile');
+                      var response = await http.post(url,
+                          headers: {"Content-Type": "application/json"},
+                          body: json.encode(payload));
+                      prefs.setString("name", nameEditing.text);
+                      prefs.setString("username", usernameEditing.text);
+                      prefs.setString("password", passwordEditing.text);
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                                title: Text("Saved"),
+                                content: Text("Saved to db"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'OK'),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ));
+                    },
+                    child: Text("Save")),
                 SizedBox(
                   height: 40,
                 ),
@@ -221,8 +264,6 @@ class _ProfileState extends State<Profile> {
                 SizedBox(
                   height: 40,
                 ),
-                Text("Items you've put on rent",
-                    style: TextStyle(fontSize: 20)),
               ],
             ),
           ),
