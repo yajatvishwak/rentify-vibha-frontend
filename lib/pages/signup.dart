@@ -67,7 +67,6 @@ class _SignupState extends State<Signup> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     controller: phonenumberEditing,
-                    obscureText: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Phone',
@@ -78,7 +77,6 @@ class _SignupState extends State<Signup> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     controller: nameEditing,
-                    obscureText: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Name',
@@ -123,7 +121,7 @@ class _SignupState extends State<Signup> {
                             prefs.setString("uid", res["uid"].toString());
                             prefs.setString("password", passwordEditing.text);
                             prefs.setString(
-                                "phonnumber", phonenumberEditing.text);
+                                "phonenumber", phonenumberEditing.text);
                             Navigator.push(
                               context,
                               MaterialPageRoute(

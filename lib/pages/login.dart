@@ -94,7 +94,7 @@ class _LoginState extends State<Login> {
                           prefs.setString("username", usernameEditing.text);
                           prefs.setString("uid", res["uid"].toString());
                           prefs.setString(
-                              "phonenumber", res["phonenumer"].toString());
+                              "phonenumber", res["phonenumber"].toString());
                           prefs.setString("password", passwordEditing.text);
                           Navigator.push(
                             context,
